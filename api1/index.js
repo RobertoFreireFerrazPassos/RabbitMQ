@@ -1,7 +1,9 @@
 const express = require("express");
+const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+app.use(cors());
 app.use(express.json());
 
 const amqp = require("amqplib");
@@ -14,7 +16,7 @@ async function connectQueue() {
     try {
         connection = await amqp.connect("amqp://localhost:5672");
         channel = await connection.createChannel();
-        
+
         await channel.assertQueue(queueUser);
         
     } catch (error) {
@@ -29,12 +31,14 @@ const sendData = async (data) => {
     await connection.close();
 }
 
-app.get("/send-msg", (req, res) => {
+app.post("/send-msg", (req, res) => {
+    const { name } = req.body;
+
     const data = {
         timeStamp : new Date,
         identifier : "newuser",
         data : {
-          name: "John Snow"
+          name: name
         }
     }
 

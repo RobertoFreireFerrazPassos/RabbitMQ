@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 0.5rem;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .message-label {
+      margin-top: 1rem;
+      display: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Form Example</h1>
+    <form id="myForm">
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <button type="submit">Submit</button>
+      <div id="messageLabel" class="message-label"></div>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("myForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      
+      var form = event.target;
+      var formData = new FormData(form);
+      
+      var payload = {
+        name: formData.get("name")
+      };
+
+      fetch("http://localhost:3001/send-msg", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(function(response) {
+        if (response.ok) {
+          showMessageLabel("Form submitted successfully!", true);
+        } else {
+          showMessageLabel("Form submission failed.", false);
+        }
+      })
+      .catch(function(error) {
+        console.error("Error:", error);
+        showMessageLabel("Form submission failed.", false);
+      });
+    });
+
+    function showMessageLabel(message, isSuccess) {
+      var messageLabel = document.getElementById("messageLabel");
+      messageLabel.textContent = message;
+      messageLabel.style.display = "block";
+
+      if (isSuccess) {
+        messageLabel.style.color = "green";
+      } else {
+        messageLabel.style.color = "red";
+      }
+
+      setTimeout(function() {
+        messageLabel.textContent = "";
+        messageLabel.style.display = "none";
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
