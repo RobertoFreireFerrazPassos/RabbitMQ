@@ -19,8 +19,12 @@
       background-color: #f1f1f1;
     }
 
-    .right-column {
+    .middle-column {
       background-color: #e1e1e1;
+    }
+
+    .right-column {
+      background-color: #d1d1d1;
     }
 
     .container {
@@ -65,12 +69,21 @@
     #dataList li {
       margin-bottom: 10px;
     }
+
+    #dataList2 {
+      margin-top: 20px;
+      list-style-type: none;
+    }
+
+    #dataList2 li {
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
     <div class="column left-column">
         <div class="container">
-            <h1>Create user:</h1>
+            <h1>API 1 - Create user:</h1>
             <form id="myForm">
                 <div class="form-group">
                 <label for="name">Name:</label>
@@ -82,9 +95,14 @@
         </div>
     </div>
 
-    <div class="column right-column">
-        <h1>Users:</h1>
+    <div class="column middle-column">
+        <h1>API 2 - Users:</h1>
         <ul id="dataList"></ul>
+    </div>
+
+    <div class="column right-column">
+        <h1>API 3 - Users:</h1>
+        <ul id="dataList2"></ul>
     </div>
 
   <script>
@@ -135,12 +153,11 @@
       }, 3000);
     }
 
-
-    function fetchUsers() {
-      fetch('http://localhost:3002/users') // Replace with your API endpoint URL
+    function fetchUsers(port,elementId) {
+      fetch('http://localhost:' + port +'/users') // Replace with your API endpoint URL
         .then(response => response.json())
         .then(data => {
-          const dataList = document.getElementById('dataList');
+          const dataList = document.getElementById(elementId);
           dataList.innerHTML = '';
 
           data.forEach((item,index) => {
@@ -154,7 +171,8 @@
         });
     }
 
-    fetchUsers(); 
+    fetchUsers('3002','dataList'); 
+    fetchUsers('3003','dataList2'); 
 
     setInterval(fetchUsers, 10000); 
   </script>
