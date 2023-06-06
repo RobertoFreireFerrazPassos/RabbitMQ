@@ -1,6 +1,6 @@
 # RabbitMQ
 
-docker-compose up to run first the rabbitmq server
+First, 'docker-compose up' to run the rabbitmq server
 
 In each api folder, run 'node index.js'
 
