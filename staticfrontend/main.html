@@ -32,6 +32,7 @@
     .container {
       max-width: 400px;
       margin: 0 auto;
+      padding: 10px;
     }
 
     .form-group {
@@ -95,6 +96,9 @@
                 <div id="messageLabel" class="message-label"></div>
             </form>
         </div>
+        <div class="container">
+            <button class="button" id="requestButton">Create 10k users</button>
+        </div>
     </div>
 
     <div class="column middle-column">
@@ -138,6 +142,13 @@
       });
     });
 
+    document.getElementById('requestButton').addEventListener('click', function() {
+      fetch('http://localhost:3001/batchcreateusers')
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    });
+
     function showMessageLabel(message, isSuccess) {
       var messageLabel = document.getElementById("messageLabel");
       messageLabel.textContent = message;
@@ -162,11 +173,17 @@
           const dataList = document.getElementById(elementId);
           dataList.innerHTML = '';
 
-          data.forEach((item,index) => {
+          if (data.length > 5) {
             const listItem = document.createElement('li');
-            listItem.textContent = (index + 1) + " - " +  item.name;
+            listItem.textContent = `It has ${data.length} items`;
             dataList.appendChild(listItem);
-          });
+          } else {
+            data.forEach((item,index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = (index + 1) + " - " +  item.name;
+                dataList.appendChild(listItem);
+            });
+          }          
         })
         .catch(error => {
           console.error('Error:', error);
@@ -179,7 +196,7 @@
     setInterval(() => {
         fetchUsers('3002','dataList'); 
         fetchUsers('3003','dataList2');
-    }, 10000); 
+    }, 1000); 
   </script>
 </body>
 </html>

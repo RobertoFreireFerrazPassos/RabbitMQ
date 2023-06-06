@@ -23,11 +23,12 @@ async function connectQueue() {
         channel = await connection.createChannel();
 
         await channel.assertQueue(queueUser);
+        channel.prefetch(2);
         await channel.bindQueue(queueUser, exchangeUser, '');
         
         channel.consume(queueUser, data => {
             var eventMessage = JSON.parse(`${data.content}`);
-            
+
             if (eventMessage.identifier === "newuser") {
               if (!database["user"]) {
                 database["user"] = [];

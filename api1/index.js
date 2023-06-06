@@ -30,6 +30,25 @@ const sendUserData = async (data) => {
     await connection.close();
 }
 
+const sendUserDataInBatch = async () => {
+  await connectExchange(exchangeUser);
+
+  for (let i = 0; i < 10000; i++) {
+    const data = {
+      timeStamp : new Date,
+      identifier : "newuser",
+      data : {
+        name: "user" + i
+      }
+    }
+
+    await channel.publish(exchangeUser, '', Buffer.from(JSON.stringify(data)));
+  }
+  
+  await channel.close();
+  await connection.close();
+}
+
 app.post("/user", (req, res) => {
     const { name } = req.body;
 
@@ -45,7 +64,11 @@ app.post("/user", (req, res) => {
 
     res.send("Message Sent");
     
-})
+});
 
+app.get("/batchcreateusers", (req, res) => {
+  sendUserDataInBatch();
+  res.send("okay");  
+});
 
 app.listen(PORT, () => console.log("Server running at port " + PORT));
