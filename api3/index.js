@@ -9,7 +9,8 @@ const PORT = process.env.PORT || 3003;
 
 const amqp = require("amqplib");
 var channel, connection;
-const queueUser = "userQueue";
+const exchangeUser = "userExchange";
+const queueUser = "userQueueApi3";
 var database = {
   user : []
 }
@@ -22,6 +23,7 @@ async function connectQueue() {
         channel = await connection.createChannel();
 
         await channel.assertQueue(queueUser);
+        await channel.bindQueue(queueUser, exchangeUser, '');
         
         channel.consume(queueUser, data => {
             var eventMessage = JSON.parse(`${data.content}`);
