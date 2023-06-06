@@ -1,10 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Form Example</title>
   <style>
     body {
+      margin: 0;
+      padding: 0;
+      display: flex;
       font-family: Arial, sans-serif;
+    }
+
+    .column {
+      flex: 1;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .left-column {
+      background-color: #f1f1f1;
+    }
+
+    .right-column {
+      background-color: #e1e1e1;
     }
 
     .container {
@@ -40,20 +56,36 @@
       display: none;
       font-weight: bold;
     }
+
+    #dataList {
+      margin-top: 20px;
+      list-style-type: none;
+    }
+
+    #dataList li {
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Form Example</h1>
-    <form id="myForm">
-      <div class="form-group">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-      </div>
-      <button type="submit">Submit</button>
-      <div id="messageLabel" class="message-label"></div>
-    </form>
-  </div>
+    <div class="column left-column">
+        <div class="container">
+            <h1>Create user:</h1>
+            <form id="myForm">
+                <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                </div>
+                <button type="submit">Submit</button>
+                <div id="messageLabel" class="message-label"></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="column right-column">
+        <h1>Users:</h1>
+        <ul id="dataList"></ul>
+    </div>
 
   <script>
     document.getElementById("myForm").addEventListener("submit", function(event) {
@@ -66,7 +98,7 @@
         name: formData.get("name")
       };
 
-      fetch("http://localhost:3001/send-msg", {
+      fetch("http://localhost:3001/user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -102,6 +134,29 @@
         messageLabel.style.display = "none";
       }, 3000);
     }
+
+
+    function fetchUsers() {
+      fetch('http://localhost:3002/users') // Replace with your API endpoint URL
+        .then(response => response.json())
+        .then(data => {
+          const dataList = document.getElementById('dataList');
+          dataList.innerHTML = '';
+
+          data.forEach((item,index) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = (index + 1) + " - " +  item.name;
+            dataList.appendChild(listItem);
+          });
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
+    fetchUsers(); 
+
+    setInterval(fetchUsers, 10000); 
   </script>
 </body>
 </html>

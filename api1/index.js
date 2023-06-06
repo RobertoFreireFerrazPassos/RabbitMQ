@@ -10,28 +10,28 @@ const amqp = require("amqplib");
 var channel, connection;
 const queueUser = "userQueue";
 
-connectQueue(); // call connectQueue function
-
-async function connectQueue() {
+async function connectQueue(queue) {
     try {
         connection = await amqp.connect("amqp://localhost:5672");
         channel = await connection.createChannel();
 
-        await channel.assertQueue(queueUser);
+        await channel.assertQueue(queue);
         
     } catch (error) {
         console.log(error);
     }
 }
 
-const sendData = async (data) => {
-    await channel.sendToQueue(queueUser, Buffer.from(JSON.stringify(data)));
+const sendUserData = async (data, queue) => {
+    await connectQueue(queue); 
+
+    await channel.sendToQueue(queue, Buffer.from(JSON.stringify(data)));
 
     await channel.close();
     await connection.close();
 }
 
-app.post("/send-msg", (req, res) => {
+app.post("/user", (req, res) => {
     const { name } = req.body;
 
     const data = {
@@ -42,7 +42,7 @@ app.post("/send-msg", (req, res) => {
         }
     }
 
-    sendData(data);
+    sendUserData(data, queueUser);
 
     res.send("Message Sent");
     
