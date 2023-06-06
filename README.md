@@ -4,10 +4,6 @@ docker-compose up to run first the rabbitmq server
 
 In each api folder, run 'node index.js'
 
-http://localhost:3002/
-
-http://localhost:3001/send-msg
-
 http://localhost:15672/
 guest
 guest
