@@ -7,12 +7,14 @@
       padding: 0;
       display: flex;
       font-family: Arial, sans-serif;
+      height: 100vh;
     }
 
     .column {
       flex: 1;
       padding: 20px;
       box-sizing: border-box;
+      height: 100%;
     }
 
     .left-column {
@@ -174,7 +176,10 @@
     fetchUsers('3002','dataList'); 
     fetchUsers('3003','dataList2'); 
 
-    setInterval(fetchUsers, 10000); 
+    setInterval(() => {
+        fetchUsers('3002','dataList'); 
+        fetchUsers('3003','dataList2');
+    }, 10000); 
   </script>
 </body>
 </html>
